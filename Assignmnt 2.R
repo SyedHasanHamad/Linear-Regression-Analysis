@@ -1,15 +1,3 @@
----
-title: "assignment 2"
-author: "Syed Hasan Hamad"
-date: "2023-09-04"
-output:
-  word_document: default
-  html_document: default
----
-
-
-
-```{r Q(a), warning=FALSE}
 library(faraway)
 library(MASS)
 
@@ -25,9 +13,7 @@ flag <- c(1, 21, 22, 57, 70, 88, 91, 94, 121, 127, 149, 151, 159, 162,
 fat1train <- fat[-flag, ]
 fat1test <- fat[flag, ]
 
-```
 
-```{r Q(b), message=FALSE, warning=FALSE}
 dim(fat1train)
 
 
@@ -38,18 +24,18 @@ summary(fat1train)
 cor_matrix <- cor(fat1train[, -1])  
 round(cor_matrix, 2)  
 
-```
 
 
-```{r Linear regression with all predictors, message=FALSE, warning=FALSE}
+
+
 # Q (C) i. Linear Regression with all predictors
 mod1 <- lm(brozek ~ ., data = fat1train)
 # Linear Regression with all predictors
 pred1.test <- predict.lm(mod1, newdata = fat1test)
 error1.test <- mean((pred1.test - fat1test$brozek)^2)
-```
 
-```{r LR using best predictor, message=FALSE, warning=FALSE}
+
+
 
 library(leaps)
 a2 <- regsubsets(brozek ~ ., data= fat1train, nvmax=5, nbest= 120,
@@ -63,19 +49,15 @@ flag2 <- op2[which.min( models2.rss[op2])]
 mod2 <- lm( brozek ~ siri + density + thigh + knee +forearm, data = fat1train)
 pred2 <- predict(mod2, fat1test[,2:18])
 error2.test <- mean((pred2 - fat1test[,1])^2)
-```
 
 
-```{r Linear regression with variablesselected using AIC, message=FALSE, warning=FALSE}
 # Q (C) iii. Linear regression with variables (stepwise) selected using 
 model3 <- step(mod1)
 round(coef(model3),3)
 pred3 <- predict(model3, fat1test[,2:18])
 error3.test <- mean((pred3 - fat1test[,1])^2)
-```
 
 
-```{r Ridge Regression, message=FALSE, warning=FALSE}
 # q (C) iv. Ridge regression
 library(MASS)
 fat.ridge <- lm.ridge( brozek ~ ., data = fat1train, lambda= seq(0,100,0.001))
@@ -85,10 +67,8 @@ rig1intercepts <- fat.ridge$ym - sum(fat.ridge$xm *(rig1coef / fat.ridge$scales)
 pred4 <- scale(fat1test[,2:18], center = F, scale = fat.ridge$scales)%*%
 rig1coef + rig1intercepts;
 error4.test <- mean( (pred4 - fat1test[,1])^2)
-```
 
 
-```{r LASSO, message=FALSE, warning=FALSE}
 # q (C) v. LASSO regression
 library(lars)
 fat.lars <- lars( as.matrix(fat1train[,2:18]),
@@ -99,10 +79,7 @@ lasso.lambda <- fat.lars$lambda[index1];
 fit5b <- predict(fat.lars, fat1test[,-1], s=lasso.lambda, type="fit", mode="lambda");
 yhat5b <- fit5b$fit;
 error5.test <- mean( (yhat5b - fat1test[,1])^2);
-```
 
-
-```{r Principal Component Regression, message=FALSE, warning=FALSE}
 
 trainpca <- prcomp(fat1train[, 2:18])
 trainpca$sdev
@@ -123,10 +100,7 @@ ypred6b <- predict(fat.pca, ncomp = ncompopt, newdata = fat1test[, 2:18])
 error6.test <- mean((ypred6b - fat1test[, 1])^2)
 
 
-```
 
-
-```{r Partial least square, message=FALSE, warning=FALSE}
 
 library(pls)
 
@@ -137,10 +111,7 @@ ypred7b <- predict(fat.pls, fat1test[, 2:18], ncomp = ncompopt)
 error7.test <- mean((ypred7b - fat1test[, 1])^2)
 
 
-```
 
-
-```{r All testing errors, warning=FALSE}
 
 # Print testing errors rounded to 4 decimal places
 cat("Testing Errors:\n")
@@ -153,9 +124,7 @@ print(paste("Principal Component regression:", round(error6.test, 4)))
 print(paste("Partial least squares:", round(error7.test, 4)))
 
 
-```
 
-```{r echo=TRUE, message=FALSE, warning=FALSE}
 
 # Set the seed for reproducibility
 set.seed(7406)
@@ -240,14 +209,11 @@ for (i in 1:7) {
 
 
 
-```
 
-```{r}
 # Print the mean and variance for each model
 for (i in 1:7) {
   cat("Model", i, ": Mean MCCV Error =", mean_testing_errors_list[[i]], ", Variance MCCV Error =", variance_testing_errors_list[[i]], "\n")
 }
-```
 
 
 
